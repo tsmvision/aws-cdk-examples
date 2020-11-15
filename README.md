@@ -1,1 +1,1 @@
-# aws-cdk-examples
+# image resize and save image into s3
