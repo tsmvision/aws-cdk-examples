@@ -54,7 +54,7 @@ interface IEvent {
   methodArn?: string;
 }
 
-exports.handler = async (event: IEvent) => {
+export const handler = async (event: IEvent) => {
   const token = event.authorizationToken;
   switch (token) {
     case "allow":
