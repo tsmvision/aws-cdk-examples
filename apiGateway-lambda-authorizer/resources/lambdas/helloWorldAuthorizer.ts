@@ -105,18 +105,19 @@ const generatePolicy: IGeneratePolicy = (principalId, effect, resource) => {
   };
 
   if (effect && resource) {
-    const policyDocument = {
-      Version: "2012-10-17",
-      Statement: [
-        {
-          Action: "execute-api:Invoke",
-          Effect: effect,
-          Resource: resource,
-        },
-      ],
+    return {
+      ...authResponse,
+      policyDocument: {
+        Version: "2012-10-17",
+        Statement: [
+          {
+            Action: "execute-api:Invoke",
+            Effect: effect,
+            Resource: resource,
+          },
+        ],
+      },
     };
-    // authResponse.policyDocument = policyDocument;
-    return { ...authResponse, policyDocument };
   }
 
   // Optional output with custom properties of the String, Number or Boolean type.
