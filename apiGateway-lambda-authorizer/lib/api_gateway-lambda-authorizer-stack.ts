@@ -26,15 +26,6 @@ export class ApiGatewayLambdaAuthorizerStack extends cdk.Stack {
       }
     );
 
-    // for debugging helloWorldAuthorizer - comment if not required
-    // const helloWorldAuthorizerLogGroup = new cloudwatch.LogGroup(
-    //   this,
-    //   "helloWorldAuthorizer",
-    //   {
-    //     logGroupName: "",
-    //   }
-    // );
-
     // new api gateway
     const api = new apigateway.RestApi(this, "ApiGateway-lambda-authorizer", {
       description: "Api gateway for helloWorld with authorizer",
