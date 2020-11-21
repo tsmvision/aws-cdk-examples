@@ -1,41 +1,5 @@
 import * as AWS from "aws-sdk";
 
-// /**
-//  * return necessary elements from columnMetadata only
-//  * @param columnMetadata
-//  */
-// const getSanitizedColumnMetadata = (
-//   columnMetadata: AWS.RDSDataService.Metadata
-// ) => {
-//   return columnMetadata.map(({ label, typeName }) => {
-//     return {
-//       label,
-//       typeName,
-//     };
-//   });
-// };
-
-// /**
-//  * return cleaner data from records
-//  * @param records
-//  */
-// const getSanitizedRecords = (records: AWS.RDSDataService.SqlRecords) => {
-//   const returnData = [];
-
-//   for (let record of records) {
-//     let result = record.map((element) => Object.values(element)[0]);
-//     returnData.push(result);
-//   }
-
-//   return returnData;
-// };
-
-// const getSanitizedColumnMetadata2 = (
-//   columnMetadata: AWS.RDSDataService.Metadata
-// ) => {
-//   return columnMetadata.map(({ label }) => label);
-// };
-
 /**
  * generate body
  * [
@@ -54,10 +18,7 @@ const getBody = (
   records: AWS.RDSDataService.SqlRecords = []
 ) => {
   if (columnMetaData.length === 0 || records.length === 0) {
-    return {
-      columnMetaData: [],
-      records: [],
-    };
+    return [];
   }
 
   const result = [];
@@ -78,7 +39,7 @@ export const handler = async () => {
   const sqlParams = {
     resourceArn: process.env.CLUSTER_ARN || "",
     secretArn: process.env.SECRET_ARN || "",
-    sql: "SELECT * FROM northwind.Customers LIMIT 1;",
+    sql: "SELECT * FROM northwind.Customers LIMIT 2;",
     includeResultMetadata: true,
   };
   const db = new AWS.RDSDataService();
@@ -87,23 +48,15 @@ export const handler = async () => {
       .executeStatement(sqlParams)
       .promise();
 
-    // const columnData = columnMetadata
-    //   ? getSanitizedColumnMetadata(columnMetadata)
-    //   : [];
-
-    // const recordData = records ? getSanitizedRecords(records) : [];
-
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        ...getBody(columnMetadata, records),
-      }),
+      body: JSON.stringify([...getBody(columnMetadata, records)]),
     };
   } catch (e) {
     console.log(e);
     return {
       statusCode: 200,
-      body: "error",
+      body: [[{}]],
     };
   }
 };
