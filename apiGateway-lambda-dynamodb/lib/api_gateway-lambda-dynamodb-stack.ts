@@ -40,12 +40,22 @@ export class ApiGatewayLambdaDynamodbStack extends cdk.Stack {
     table.grantWriteData(writeItemsLambdaFn);
 
     // // create api gateway
-    // const api = new apigateway.RestApi(this, "lambdaDynamoDBAPI");
+    const api = new apigateway.RestApi(this, "lambdaDynamoDBAPI");
 
-    // // create lambdaintegration for api gateway
-    // const lambdaFnIntegration = new apigateway.LambdaIntegration(lambdaFn, {});
+    // create lambdaintegration for api gateway
+    const readItemsLambdaFnIntegration = new apigateway.LambdaIntegration(
+      readItemsLambdaFn,
+      {}
+    );
+
+    const writeItemsLambdaFnIntegration = new apigateway.LambdaIntegration(
+      writeItemsLambdaFn,
+      {}
+    );
 
     // // setup api gateway route
-    // api.root.addMethod("GET", lambdaFnIntegration);
+    api.root.addMethod("GET", readItemsLambdaFnIntegration);
+
+    api.root.addMethod("POST", writeItemsLambdaFnIntegration);
   }
 }

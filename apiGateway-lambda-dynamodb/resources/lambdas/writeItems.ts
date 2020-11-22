@@ -1,7 +1,9 @@
 import * as AWS from "aws-sdk";
+// It has issue with "event" type
 import { APIGatewayProxyHandler } from "aws-lambda";
 import { IRequest, IDynamodbPutRequest, IParam } from "./writeItems.type";
 
+// if data exist, it throws error
 // test input body
 // [
 //   {
@@ -54,8 +56,8 @@ AWS.config.apiVersions = {
   // other service API versions
 };
 
-export const handler = async (event: any) => {
-  const { body } = event;
+export const handler: APIGatewayProxyHandler = async (event: any) => {
+  const body = JSON.parse(event.body);
 
   if (!body) {
     return {
@@ -66,14 +68,12 @@ export const handler = async (event: any) => {
     };
   }
 
-  const requests: IRequest[] = body;
-
   const dynamodb = new AWS.DynamoDB();
 
   const { TABLE_NAME = "" } = process.env;
   const params: IParam = {
     RequestItems: {
-      [TABLE_NAME]: generatePutRequests(requests),
+      [TABLE_NAME]: generatePutRequests(body),
     },
   };
 
