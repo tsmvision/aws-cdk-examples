@@ -18,7 +18,7 @@ export class FargateStack extends cdk.Stack {
     });
 
     // Create a load-balanced Fargate service and make it public
-    new ecs_patterns.ApplicationLoadBalancedFargateService(
+    const fargateService = new ecs_patterns.ApplicationLoadBalancedFargateService(
       this,
       "FargateService",
       {
@@ -32,7 +32,11 @@ export class FargateStack extends cdk.Stack {
         },
         memoryLimitMiB: 512, // Default is 512
         publicLoadBalancer: true, // Defauls is false
+        // redirectHTTP: true, // redirect http to https,
       }
+
+      // setup certificate
+      // assign to route53 for custom domain
     );
   }
 }
