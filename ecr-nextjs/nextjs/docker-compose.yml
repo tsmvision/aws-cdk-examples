@@ -1,9 +1,0 @@
-version: "3.8"
-services:
-  webapp:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: next-js
-    ports:
-      - "3000:3000"

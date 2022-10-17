@@ -1,0 +1,230 @@
+import * as cdk from 'aws-cdk-lib';
+import {Construct} from 'constructs';
+import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as ecs from 'aws-cdk-lib/aws-ecs';
+import * as ecr from 'aws-cdk-lib/aws-ecr';
+import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import * as ecs_patterns from 'aws-cdk-lib/aws-ecs-patterns';
+import {ApplicationProtocol} from "aws-cdk-lib/aws-elasticloadbalancingv2";
+import {Duration} from "aws-cdk-lib";
+import {CpuArchitecture} from "aws-cdk-lib/aws-ecs";
+
+export class AwsDeployStack extends cdk.Stack {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+    super(scope, id, props);
+
+    // The code that defines your stack goes here
+      const vpc = new ec2.Vpc(this, "MyVpc", {
+          maxAzs: 2 // Default is all AZs in region
+
+      });
+
+      const cluster = new ecs.Cluster(this, "HelloWorldCluster", {
+          vpc
+      });
+
+      const repository  = ecr.Repository.fromRepositoryArn(this, "helloWorldRepository","arn:aws:ecr:us-east-1:183844933110:repository/hello-world");
+
+      const taskDefinition = new ecs.FargateTaskDefinition(this, 'TaskDef', {
+          memoryLimitMiB: 1024,
+          cpu: 512,
+//           ephemeralStorageGiB: 10
+          runtimePlatform: {
+              cpuArchitecture: CpuArchitecture.ARM64
+          }
+      });
+
+
+      const container = taskDefinition.addContainer("HelloWorldContainer", {
+          image: ecs.ContainerImage.fromEcrRepository(repository, "v1"),
+          portMappings: [{
+              containerPort: 8080
+          }]
+      });
+
+      const service = new ecs.FargateService(this, 'Service', {
+          cluster,
+          taskDefinition,
+          desiredCount: 1
+      });
+
+      const lb = new elbv2.ApplicationLoadBalancer(this, 'LB', { vpc, internetFacing: true });
+      const listener = lb.addListener('Listener', { port: 80 });
+      const targetGroup1 = listener.addTargets('ecsTarget', {
+          port: 80,
+          targets: [service],
+      });
+
+      const scaling = service.autoScaleTaskCount({ maxCapacity: 10 });
+      scaling.scaleOnCpuUtilization('CpuScaling', {
+          targetUtilizationPercent: 50,
+      });
+
+      scaling.scaleOnRequestCount('RequestScaling', {
+          requestsPerTarget: 10000,
+          targetGroup: targetGroup1,
+      });
+
+      // add auto scaler.
+
+      // add more container
+
+      // Create a load-balanced Fargate service and make it public
+//       new ecs_patterns.ApplicationLoadBalancedFargateService(this, "MyFargateService", {
+//           cluster: cluster, // Required
+//           cpu: 512, // Default is 256
+//           desiredCount: 1, // Default is 1
+// //           taskImageOptions: {
+// //               image: ecs.ContainerImage.fromRegistry('amazon/amazon-ecs-sample'),
+// //           },
+// //           taskImageOptions: { image: ecs.ContainerImage.fromEcrRepository(repository), containerPort: 8080 },
+// //           taskImageOptions: { image: ecs.ContainerImage.fromRegistry('https://public.ecr.aws/ecs-sample-image/amazon-ecs-sample:latest')},
+//           taskImageOptions: {
+//               image: ecs.ContainerImage.fromEcrRepository(repository, "v1"),
+//               containerPort: 8080
+//           },
+//           memoryLimitMiB: 2048, // Default is 512
+//           publicLoadBalancer: true,// Default is true
+//           runtimePlatform: {
+//               cpuArchitecture: CpuArchitecture.ARM64
+//           }
+// //           protocol: ApplicationProtocol.HTTPS,
+// //           redirectHTTP: true,
+// //           healthCheckGracePeriod: Duration.seconds(60)
+//       });
+
+
+//       const vpc = new ec2.Vpc(this, "MyVpc", {
+//                     maxAzs: 3 // Default is all AZs in region
+//                 });
+//
+//       // Create an ECS cluster
+//       const cluster = new ecs.Cluster(this, 'Cluster', {
+//           vpc,
+//       });
+//
+//       // Add capacity to it
+//       cluster.addCapacity('DefaultAutoScalingGroupCapacity', {
+//           instanceType: new ec2.InstanceType("t2.micro"),
+//         desiredCapacity: 3,
+//       });
+//
+//       const taskDefinition = new ecs.Ec2TaskDefinition(this, 'TaskDef');
+//
+//       const repository  = ecr.Repository.fromRepositoryArn(this, "HelloWorldRepository","arn:aws:ecr:us-east-1:183844933110:repository/hello-world");
+//
+//       taskDefinition.addContainer('DefaultContainer', {
+//           image: ecs.ContainerImage.fromEcrRepository(repository),
+//         memoryLimitMiB: 2048
+//       });
+//
+//       // Instantiate an Amazon ECS Service
+//       const service = new ecs.Ec2Service(this, 'Service', { cluster, taskDefinition });
+//
+//       const lb = new elbv2.ApplicationLoadBalancer(this, 'LB', { vpc, internetFacing: true });
+//       const listener = lb.addListener('Listener', { port: 80 });
+//       const targetGroup1 = listener.addTargets('ECS1', {
+//           port: 80,
+//     targets: [service],
+// });
+// //       const targetGroup2 = listener.addTargets('ECS2', {
+// //           port: 80,
+// //     targets: [service.loadBalancerTarget({
+// //         containerName: 'MyContainer',
+// //         containerPort: 8080
+// //     })],
+// // });
+
+//       // cluster to deploy resources to
+//       const cluster = new ecs.Cluster(this, "example-cluster", {
+//           clusterName: "example-cluster",
+//     vpc,
+// });
+//
+//       // the role assumed by the task and its containers
+//       const taskRole = new iam.Role(this, "task-role", {
+//           assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
+//     roleName: "task-role",
+//     description: "Role that the api task definitions use to run the api code",
+// });
+//
+//       taskRole.attachInlinePolicy(
+//           new iam.Policy(this, "task-policy", {
+//               statements: [
+//                   // policies to allow access to other AWS services from within the container e.g SES (Simple Email Service)
+//                   new iam.PolicyStatement({
+//                       effect: iam.Effect.ALLOW,
+//                       actions: ["SES:*"],
+//                       resources: ["*"],
+//                   }),
+//                   ],
+//           })
+//           );
+//
+//       // A really basic task definition
+//       const taskDefinition = new ecs.TaskDefinition(
+//           this,
+//           "task",
+//           {
+//               family: "task",
+//               compatibility: ecs.Compatibility.EC2_AND_FARGATE,
+//               cpu: "256",
+//               memoryMiB: "512",
+//               networkMode: ecs.NetworkMode.AWS_VPC,
+//               taskRole: taskRole,
+//           }
+//           );
+//
+//       // The docker container including the image to use
+//       const container = taskDefinition.addContainer("container", {
+//           image:  ecs.RepositoryImage.fromEcrRepository(repository, "latest"),
+//     memoryLimitMiB: 512,
+//     environment: {
+//               DB_HOST: ""
+//     },
+//     // store the logs in cloudwatch
+//     logging: ecs.LogDriver.awsLogs({ streamPrefix: "example-api-logs" }),
+// });
+//
+//       // the docker container port mappings within the container
+//       container.addPortMappings({ containerPort: 80 });
+//
+//       // Security groups to allow connections from the application load balancer to the fargate containers
+//       const ecsSG = new ec2.SecurityGroup(this, "ecsSG", {
+//           vpc,
+//     allowAllOutbound: true,
+// });
+//
+//       ecsSG.connections.allowFrom(
+//           albSG,
+//           ec2.Port.allTcp(),
+//           "Application load balancer"
+//           );
+//
+//       // The ECS Service used for deploying tasks
+//       const service = new ecs.FargateService(this, "service", {
+//           cluster,
+//     desiredCount: 1,
+//     taskDefinition,
+//     securityGroups: [ecsSG],
+//     assignPublicIp: true,
+// });
+//       // add to a target group so make containers discoverable by the application load balancer
+//       service.attachToApplicationTargetGroup(targetGroupHttp);
+//
+//       // BONUS: Autoscaling based on memory and CPU usage
+//       const scalableTaget = service.autoScaleTaskCount({
+//     minCapacity: 2,
+//     maxCapacity: 5,
+// });
+//
+//       scalableTaget.scaleOnMemoryUtilization("ScaleUpMem", {
+//           targetUtilizationPercent: 75,
+// });
+//
+//       scalableTaget.scaleOnCpuUtilization("ScaleUpCPU", {
+//           targetUtilizationPercent: 75,
+// });
+
+  }
+}
