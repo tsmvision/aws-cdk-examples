@@ -5,11 +5,18 @@ import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as ecr from "aws-cdk-lib/aws-ecr";
 import * as elbv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import { CpuArchitecture } from "aws-cdk-lib/aws-ecs";
+import { getRepositoryArn } from "../utility/envUtility";
+import { CfnLoadBalancer } from "aws-cdk-lib/aws-elasticloadbalancingv2";
 
 // TODO: .env
 // TODO: add awslog
 // TODO: display log including loadbalancer url
 // TODO: apply https
+// TODO: integrate with Api Gateway or something else for https
+
+// const REPOSITORY_ARN = process.env.REPOSITORY_ARN
+//   ? process.env.REPOSITORY_ARN
+//   : "";
 
 export class AwsDeployStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -59,11 +66,20 @@ export class AwsDeployStack extends cdk.Stack {
       vpc,
       internetFacing: true,
     });
+
     const listener = lb.addListener("Listener", { port: 80 });
     const targetGroup1 = listener.addTargets("ecsTarget", {
       port: 80,
       targets: [service],
     });
+
+    // generate certificate
+
+    // const listenerCertificate = elbv2.ListenerCertificate.fromArn("aaa");
+
+    // listener.addCertificates("certificate01", [listenerCertificate]);
+
+    //
 
     const scaling = service.autoScaleTaskCount({ maxCapacity: 10 });
     scaling.scaleOnCpuUtilization("CpuScaling", {
