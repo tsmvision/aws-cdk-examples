@@ -16,8 +16,10 @@ export class RdsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const vpc = ec2.Vpc.fromLookup(this, "vpc", {
-      vpcName: getVpcFullName(),
+    const vpcFullName = getVpcFullName();
+
+    const vpc = ec2.Vpc.fromLookup(this, vpcFullName, {
+      vpcName: vpcFullName,
     });
 
     const databaseSecurityGroup = new ec2.SecurityGroup(
@@ -49,6 +51,14 @@ export class RdsStack extends cdk.Stack {
       securityGroups: [databaseSecurityGroup],
       vpc,
       publiclyAccessible: true,
+    });
+
+    new cdk.CfnOutput(this, "databaseInstance", {
+      value: databaseInstance.dbInstanceEndpointAddress,
+    });
+
+    new cdk.CfnOutput(this, "databaseInstance arn", {
+      value: databaseInstance.instanceArn,
     });
   }
 }

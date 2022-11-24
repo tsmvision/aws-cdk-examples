@@ -1,14 +1,41 @@
-# Welcome to your CDK TypeScript project
+# Welcome to your VPC and RDS project
 
-This is a blank project for CDK development with TypeScript.
+This is a project for CDK development with TypeScript.
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
-## Useful commands
+## Requirements
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+* node.js LTS version
+* cdk 
+
+## How to synth and deploy cloudformation stacks.
+
+### clear cdk.context.json
+
+```
+$ npm run clear-cdk-context
+```
+### synth vpc
+
+```
+$ npm run synth-vpc
+```
+
+### deploy vpc to the AWS
+
+```
+$ npm run deploy-vpc
+```
+
+### synth rds
+
+```
+$ npm run synth-rds
+```
+
+### deploy rds to the AWS
+
+```
+$ npm run deploy-rds
+```

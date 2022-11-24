@@ -14,8 +14,13 @@ export const getEnv = () => {
   return { account: getCdkDefaultAccount(), region: getCdkDefaultRegion() };
 };
 
-export const vpcStackName = "VpcStack";
-export const vpcName = "CustomVpc";
+const vpcStackName = "VpcStack";
+const vpcName = "CustomVpc";
+
+const rdsStackName = "RdsStack";
+const rdsName = "CustomRds";
+
+const POSTGRESQL_PORT = 5432;
 
 export const getVpcStackName = () => {
   return vpcStackName;
@@ -29,8 +34,9 @@ export const getVpcFullName = () => {
   return `${vpcStackName}/${vpcName}`;
 };
 
-export const rdsStackName = "RdsStack";
-export const rdsName = "CustomRds";
+export const getRdsStackName = () => {
+  return rdsStackName;
+};
 
 export const getRdsName = () => {
   return rdsName;
@@ -51,8 +57,6 @@ export const getRdsFullName = () => {
 export const getRdsPassword = () => {
   return process.env.RDS_PASSWORD || "";
 };
-
-const POSTGRESQL_PORT = 5432;
 
 export const getPostgresqlPort = () => {
   return POSTGRESQL_PORT;

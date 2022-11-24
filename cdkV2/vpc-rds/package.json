@@ -9,9 +9,11 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
+    "clear-cdk-context": "cdk context --clear",
+    "synth": "cdk synth",
     "synth-vpc": "cdk synth VpcStack",
-    "synth-rds": "cdk synth RdsStack",
     "deploy-vpc": "cdk deploy VpcStack",
+    "synth-rds": "cdk synth RdsStack",
     "deploy-rds": "cdk deploy RdsStack"
   },
   "devDependencies": {
