@@ -7,7 +7,16 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 ## Requirements
 
 * node.js LTS version
-* cdk 
+* cdk
+
+## How to initialize project
+
+Initialize Cdk project to let code create CdkToolkit in the AWS for handling cdk code in the next steps.
+
+```
+$ npm run cdk-bootstrap
+```
+
 
 ## How to synth and deploy cloudformation stacks.
 

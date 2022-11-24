@@ -9,6 +9,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
+    "cdk-bootstrap": "cdk bootstrap",
     "clear-cdk-context": "cdk context --clear",
     "synth": "cdk synth",
     "synth-vpc": "cdk synth VpcStack",
@@ -24,7 +25,8 @@
     "jest": "^27.5.1",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.9.1",
-    "typescript": "~3.9.7"
+    "typescript": "~3.9.7",
+    "cdk": "^2.51.1"
   },
   "dependencies": {
     "aws-cdk-lib": "2.51.1",
