@@ -16,10 +16,10 @@ export class RdsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const vpcFullName = getVpcFullName();
+    const vpcName = getVpcFullName();
 
-    const vpc = ec2.Vpc.fromLookup(this, vpcFullName, {
-      vpcName: vpcFullName,
+    const vpc = ec2.Vpc.fromLookup(this, vpcName, {
+      vpcName,
     });
 
     const databaseSecurityGroup = new ec2.SecurityGroup(
