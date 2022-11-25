@@ -10,13 +10,13 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 * cdk
 
 ## How to initialize project
+Bootstrapping is the process of provisioning resources for the AWS CDK before you can deploy AWS CDK apps into an AWS environment. (An AWS environment is a combination of an AWS account and Region).
 
-Initialize Cdk project to let code create CdkToolkit in the AWS for handling cdk code in the next steps.
+Reference: [https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html)
 
 ```
-$ npm run cdk-bootstrap
+$ npm run cdk-bootsrap
 ```
-
 
 ## How to synth and deploy cloudformation stacks.
 

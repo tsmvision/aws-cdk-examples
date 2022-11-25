@@ -9,7 +9,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "cdk-bootstrap": "cdk bootstrap",
+    "cdk-bootstrap": "cdk bootstrap --toolkit-stack-name CustomCdkToolkit",
     "clear-cdk-context": "cdk context --clear",
     "synth": "cdk synth",
     "synth-vpc": "cdk synth VpcStack",
