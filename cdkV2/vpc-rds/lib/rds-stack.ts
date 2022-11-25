@@ -1,11 +1,4 @@
-import {
-  getVpcFullName,
-  getRdsName,
-  getRdsPassword,
-  getRdsUsername,
-  getRdsDatabaseName,
-  getPostgresqlPort,
-} from "./../utility/envUtility";
+import { EnvUtility } from "./../utility/envUtility";
 import * as cdk from "aws-cdk-lib";
 import { SecretValue } from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
@@ -16,7 +9,7 @@ export class RdsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const vpcName = getVpcFullName();
+    const vpcName = EnvUtility.getVpcFullName();
 
     const vpc = ec2.Vpc.fromLookup(this, vpcName, {
       vpcName,
@@ -34,24 +27,28 @@ export class RdsStack extends cdk.Stack {
 
     databaseSecurityGroup.addIngressRule(
       ec2.Peer.anyIpv4(),
-      ec2.Port.tcp(getPostgresqlPort()),
+      ec2.Port.tcp(EnvUtility.getPostgresqlPort()),
       "allow hTTP traffic from anywhere"
     );
 
-    const databaseInstance = new rds.DatabaseInstance(this, getRdsName(), {
-      engine: rds.DatabaseInstanceEngine.POSTGRES,
-      credentials: rds.Credentials.fromPassword(
-        getRdsUsername(),
-        SecretValue.unsafePlainText(getRdsPassword())
-      ),
-      databaseName: getRdsDatabaseName(),
-      vpcSubnets: {
-        subnetType: ec2.SubnetType.PUBLIC,
-      },
-      securityGroups: [databaseSecurityGroup],
-      vpc,
-      publiclyAccessible: true,
-    });
+    const databaseInstance = new rds.DatabaseInstance(
+      this,
+      EnvUtility.getRdsName(),
+      {
+        engine: rds.DatabaseInstanceEngine.POSTGRES,
+        credentials: rds.Credentials.fromPassword(
+          EnvUtility.getRdsUsername(),
+          SecretValue.unsafePlainText(EnvUtility.getRdsPassword())
+        ),
+        databaseName: EnvUtility.getRdsDatabaseName(),
+        vpcSubnets: {
+          subnetType: ec2.SubnetType.PUBLIC,
+        },
+        securityGroups: [databaseSecurityGroup],
+        vpc,
+        publiclyAccessible: true,
+      }
+    );
 
     new cdk.CfnOutput(this, "databaseInstance", {
       value: databaseInstance.dbInstanceEndpointAddress,

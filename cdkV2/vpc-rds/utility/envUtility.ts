@@ -2,62 +2,67 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-const getCdkDefaultAccount = () => {
-  return process.env.CDK_DEFAULT_ACCOUNT || "";
-};
+export class EnvUtility {
+  static #vpcStackName = "VpcStack";
+  static #vpcName = "CustomVpc";
 
-const getCdkDefaultRegion = () => {
-  return process.env.CDK_DEFAULT_REGION || "";
-};
+  static #rdsStackName = "RdsStack";
+  static #rdsName = "CustomRds";
 
-export const getEnv = () => {
-  return { account: getCdkDefaultAccount(), region: getCdkDefaultRegion() };
-};
+  static #POSTGRESQL_PORT = 5432;
 
-const vpcStackName = "VpcStack";
-const vpcName = "CustomVpc";
+  static getCdkDefaultAccount = () => {
+    return process.env.CDK_DEFAULT_ACCOUNT || "";
+  };
 
-const rdsStackName = "RdsStack";
-const rdsName = "CustomRds";
+  static getCdkDefaultRegion = () => {
+    return process.env.CDK_DEFAULT_REGION || "";
+  };
 
-const POSTGRESQL_PORT = 5432;
+  static getEnv = () => {
+    return {
+      account: this.getCdkDefaultAccount(),
+      region: this.getCdkDefaultRegion(),
+    };
+  };
 
-export const getVpcStackName = () => {
-  return vpcStackName;
-};
+  static getVpcStackName = () => {
+    return this.#vpcStackName;
+  };
 
-export const getVpcName = () => {
-  return vpcName;
-};
+  static getVpcName = () => {
+    return this.#vpcName;
+  };
 
-export const getVpcFullName = () => {
-  return `${vpcStackName}/${vpcName}`;
-};
+  static getVpcFullName = () => {
+    return `${this.#vpcStackName}/${this.#vpcName}`;
+  };
 
-export const getRdsStackName = () => {
-  return rdsStackName;
-};
+  static getRdsStackName = () => {
+    return this.#rdsStackName;
+  };
 
-export const getRdsName = () => {
-  return rdsName;
-};
+  static getRdsName = () => {
+    return this.#rdsName;
+  };
 
-export const getRdsDatabaseName = () => {
-  return process.env.RDS_DATABASE_NAME || "";
-};
+  static getRdsDatabaseName = () => {
+    return process.env.RDS_DATABASE_NAME || "";
+  };
 
-export const getRdsUsername = () => {
-  return process.env.RDS_USERNAME || "";
-};
+  static getRdsUsername = () => {
+    return process.env.RDS_USERNAME || "";
+  };
 
-export const getRdsFullName = () => {
-  return `${rdsStackName}/${rdsName}`;
-};
+  static getRdsFullName = () => {
+    return `${this.#rdsStackName}/${this.#rdsName}`;
+  };
 
-export const getRdsPassword = () => {
-  return process.env.RDS_PASSWORD || "";
-};
+  static getRdsPassword = () => {
+    return process.env.RDS_PASSWORD || "";
+  };
 
-export const getPostgresqlPort = () => {
-  return POSTGRESQL_PORT;
-};
+  static getPostgresqlPort = () => {
+    return this.#POSTGRESQL_PORT;
+  };
+}
