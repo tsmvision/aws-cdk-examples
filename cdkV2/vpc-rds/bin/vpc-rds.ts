@@ -1,14 +1,13 @@
 #!/usr/bin/env node
 
-import * as EnvUtility from "../utility/envUtility";
 import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
 import { VpcStack } from "../lib/vpc-stack";
 import { RdsStack } from "../lib/rds-stack";
-import { getEnv } from "../utility/envUtility";
+import * as EnvUtility from "../utility/envUtility";
 
 const app = new cdk.App();
-const env = getEnv();
+const env = EnvUtility.getEnv();
 
 new VpcStack(app, EnvUtility.getVpcStackName(), {
   /* If you don't specify 'env', this stack will be environment-agnostic.

@@ -31,11 +31,21 @@ export class RdsStack extends cdk.Stack {
       "allow hTTP traffic from anywhere"
     );
 
+    const engine = rds.DatabaseInstanceEngine.postgres({
+      version: rds.PostgresEngineVersion.VER_14_4,
+    });
+
     const databaseInstance = new rds.DatabaseInstance(
       this,
       EnvUtility.getRdsName(),
       {
-        engine: rds.DatabaseInstanceEngine.POSTGRES,
+        engine,
+        parameterGroup: new rds.ParameterGroup(this, "dataaseParameterGroup", {
+          engine,
+          parameters: {
+            "rds.force_ssl": "1",
+          },
+        }),
         credentials: rds.Credentials.fromPassword(
           EnvUtility.getRdsUsername(),
           SecretValue.unsafePlainText(EnvUtility.getRdsPassword())
