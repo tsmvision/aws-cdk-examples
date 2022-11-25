@@ -1,4 +1,4 @@
-import { EnvUtility } from "./../utility/envUtility";
+import * as EnvUtility from "./../utility/envUtility";
 import * as cdk from "aws-cdk-lib";
 import { SecretValue } from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";

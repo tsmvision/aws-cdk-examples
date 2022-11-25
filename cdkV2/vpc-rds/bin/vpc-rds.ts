@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { getVpcStackName, getRdsStackName } from "../utility/envUtility";
+import * as EnvUtility from "../utility/envUtility";
 import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
 import { VpcStack } from "../lib/vpc-stack";
@@ -10,7 +10,7 @@ import { getEnv } from "../utility/envUtility";
 const app = new cdk.App();
 const env = getEnv();
 
-new VpcStack(app, getVpcStackName(), {
+new VpcStack(app, EnvUtility.getVpcStackName(), {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
@@ -24,7 +24,7 @@ new VpcStack(app, getVpcStackName(), {
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });
 
-new RdsStack(app, getRdsStackName(), {
+new RdsStack(app, EnvUtility.getRdsStackName(), {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
