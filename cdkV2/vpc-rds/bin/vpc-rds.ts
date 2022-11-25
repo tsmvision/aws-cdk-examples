@@ -17,7 +17,7 @@ new VpcStack(app, getVpcStackName(), {
   /* Uncomment the next line to specialize this stack for the AWS Account
    * and Region that are implied by the current CLI configuration. */
   env,
-  description: "This is vpc for dummy project",
+  description: "This stack includes vpc for dummy project",
   /* Uncomment the next line if you know exactly what Account and Region you
    * want to deploy the stack to. */
   // env: { account: '123456789012', region: 'us-east-1' },
@@ -34,6 +34,6 @@ new RdsStack(app, getRdsStackName(), {
   /* Uncomment the next line if you know exactly what Account and Region you
    * want to deploy the stack to. */
   env,
-  description: "This is rds for dummy project",
+  description: "This stack includes rds for dummy project",
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });
