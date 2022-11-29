@@ -45,7 +45,6 @@ export class AwsDeployStack extends cdk.Stack {
       runtimePlatform: {
         cpuArchitecture: CpuArchitecture.ARM64,
       },
-
       // volumes: [
       //   {
       //     name: "temp",
@@ -64,7 +63,7 @@ export class AwsDeployStack extends cdk.Stack {
     });
 
     // container.addMountPoints({
-    //   containerPath: "/www",
+    //   containerPath: "/www/temp",
     //   readOnly: false,
     //   sourceVolume: "temp",
     // });
