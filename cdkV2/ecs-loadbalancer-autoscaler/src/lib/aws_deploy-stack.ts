@@ -45,6 +45,12 @@ export class AwsDeployStack extends cdk.Stack {
       runtimePlatform: {
         cpuArchitecture: CpuArchitecture.ARM64,
       },
+
+      // volumes: [
+      //   {
+      //     name: "temp",
+      //   },
+      // ],
     });
 
     const container = taskDefinition.addContainer("HelloWorldContainer", {
@@ -56,6 +62,12 @@ export class AwsDeployStack extends cdk.Stack {
       ],
       logging: ecs.LogDrivers.awsLogs({ streamPrefix: "HelloWorldContainer" }),
     });
+
+    // container.addMountPoints({
+    //   containerPath: "/www",
+    //   readOnly: false,
+    //   sourceVolume: "temp",
+    // });
 
     const service = new ecs.FargateService(this, "Service", {
       cluster,
